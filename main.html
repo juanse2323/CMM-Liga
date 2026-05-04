@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga de Fútbol</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: linear-gradient(180deg, #000000 0%, #111111 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .subtitle { color: #888; margin-bottom: 40px; font-size: 1rem; }
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #ffffff;
+            color: #000000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        }
+        .btn-admin { background: #333; color: white; }
+        .btn-admin:hover { box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1); }
+        .features {
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .feature {
+            background: rgba(255,255,255,0.05);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .feature h3 { color: #fff; margin-bottom: 5px; font-size: 0.9rem; }
+        .feature p { color: #666; font-size: 0.8rem; }
+        .info { margin-top: 30px; color: #555; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LIGA DE FÚTBOL</h1>
+        <p class="subtitle">La élite del fútbol Roblox</p>
+        
+        <a href="https://app-theta-seven-68.vercel.app" target="_blank" class="btn">
+            🌐 Abrir Página Principal
+        </a>
+        <a href="https://app-theta-seven-68.vercel.app/admin" target="_blank" class="btn btn-admin">
+            ⚙️ Panel de Administración
+        </a>
+
+        <div class="features">
+            <div class="feature">
+                <h3>📊 TABLA</h3>
+                <p>Posiciones</p>
+            </div>
+            <div class="feature">
+                <h3>⚽ PARTIDOS</h3>
+                <p>Resultados</p>
+            </div>
+            <div class="feature">
+                <h3>👥 JUGADORES</h3>
+                <p>Planteles</p>
+            </div>
+            <div class="feature">
+                <h3>📰 NOTICIAS</h3>
+                <p>Novedades</p>
+            </div>
+        </div>
+
+        <p class="info">
+            Admin: <b>Juansec</b> / <b>Sebitastqm09</b><br>
+            Admin 2: <b>Max</b> / <b>Max12344</b>
+        </p>
+    </div>
+</body>
+</html>
