@@ -170,7 +170,7 @@ class App:
     def agregar_club(self):
         win = tk.Toplevel(self.root)
         win.title("Agregar Club")
-        win.geometry("450x400")
+        win.geometry("450x450")
         
         ttk.Label(win, text="Nombre del Club:").pack(pady=5)
         ent_nombre = ttk.Entry(win, width=40)
@@ -180,28 +180,30 @@ class App:
         ent_url = ttk.Entry(win, width=40)
         ent_url.pack(pady=5)
         
-        lbl_preview = tk.Label(win, text="Vista previa:", bg="lightgray", width=20, height=5)
-        lbl_preview.pack(pady=5)
+        btn_seleccionar = ttk.Button(win, text="📁 Seleccionar imagen de mi PC...", command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
+        btn_seleccionar.pack(pady=5)
+        
+        lbl_preview = tk.Label(win, text="Vista previa del logo", bg="#ddd", width=30, height=8)
+        lbl_preview.pack(pady=10)
         
         def actualizar_preview():
             url = ent_url.get()
-            if url and os.path.exists(os.path.join(BASE_DIR, "public", url.lstrip("/"))):
-                try:
-                    img_path = os.path.join(BASE_DIR, "public", url.lstrip("/"))
-                    img = tk.PhotoImage(file=img_path)
-                    img = img.subsample(max(1, max(img.width() // 64, img.height() // 64)))
-                    lbl_preview.image = img
-                    lbl_preview.config(image=img, text="")
-                except:
-                    lbl_preview.config(text="Vista previa", image="")
+            if url:
+                if url.startswith("/images/") and os.path.exists(os.path.join(BASE_DIR, "public", url.lstrip("/"))):
+                    try:
+                        img_path = os.path.join(BASE_DIR, "public", url.lstrip("/"))
+                        img = tk.PhotoImage(file=img_path)
+                        img = img.subsample(max(1, max(img.width() // 64, img.height() // 64)))
+                        lbl_preview.image = img
+                        lbl_preview.config(image=img, text="")
+                    except Exception as e:
+                        lbl_preview.config(text="Vista previa", image="")
+                elif url.startswith("http"):
+                    lbl_preview.config(text="URL externa\n(no se puede previsualizar)")
+                else:
+                    lbl_preview.config(text="Vista previa")
             else:
                 lbl_preview.config(text="Vista previa", image="")
-        
-        def seleccionar():
-            self.seleccionar_imagen(ent_url)
-            actualizar_preview()
-        
-        ttk.Button(win, text="Seleccionar imagen...", command=seleccionar).pack(pady=5)
         
         def guardar():
             nuevo = {"id": str(len(clubes) + 1), "nombre": ent_nombre.get(), "logoUrl": ent_url.get() or "https://via.placeholder.com/64?text=CCM", "jugadores": []}
@@ -210,9 +212,9 @@ class App:
             guardar_datos()
             win.destroy()
         
-        ttk.Button(win, text="Guardar", command=guardar).pack(pady=20)
+        ttk.Button(win, text="💾 Guardar Club", command=guardar).pack(pady=20)
     
-    def seleccionar_imagen(self, entry):
+    def _seleccionar_y_preview(self, entry, lbl_preview):
         ruta = filedialog.askopenfilename(filetypes=[("Imágenes", "*.png;*.jpg;*.jpeg;*.gif;*.webp")])
         if ruta:
             nombre = os.path.basename(ruta)
@@ -220,6 +222,14 @@ class App:
             shutil.copy(ruta, destino)
             entry.delete(0, "end")
             entry.insert(0, f"/images/{nombre}")
+            
+            try:
+                img = tk.PhotoImage(file=destino)
+                img = img.subsample(max(1, max(img.width() // 64, img.height() // 64)))
+                lbl_preview.image = img
+                lbl_preview.config(image=img, text="")
+            except:
+                lbl_preview.config(text="Imagen cargada")
     
     def editar_club(self):
         sel = self.tree_clubes.selection()
@@ -244,30 +254,32 @@ class App:
         ent_url.insert(0, club.get("logoUrl", ""))
         ent_url.pack(pady=5)
         
-        lbl_preview = tk.Label(win, text="Vista previa:", bg="lightgray", width=20, height=5)
-        lbl_preview.pack(pady=5)
+        lbl_preview = tk.Label(win, text="Vista previa del logo", bg="#ddd", width=30, height=8)
+        lbl_preview.pack(pady=10)
         
         def actualizar_preview():
             url = ent_url.get()
-            if url and os.path.exists(os.path.join(BASE_DIR, "public", url.lstrip("/"))):
-                try:
-                    img_path = os.path.join(BASE_DIR, "public", url.lstrip("/"))
-                    img = tk.PhotoImage(file=img_path)
-                    img = img.subsample(max(1, max(img.width() // 64, img.height() // 64)))
-                    lbl_preview.image = img
-                    lbl_preview.config(image=img, text="")
-                except:
-                    lbl_preview.config(text="Vista previa", image="")
+            if url:
+                if url.startswith("/images/") and os.path.exists(os.path.join(BASE_DIR, "public", url.lstrip("/"))):
+                    try:
+                        img_path = os.path.join(BASE_DIR, "public", url.lstrip("/"))
+                        img = tk.PhotoImage(file=img_path)
+                        img = img.subsample(max(1, max(img.width() // 64, img.height() // 64)))
+                        lbl_preview.image = img
+                        lbl_preview.config(image=img, text="")
+                    except:
+                        lbl_preview.config(text="Vista previa")
+                elif url.startswith("http"):
+                    lbl_preview.config(text="URL externa\n(no se puede previsualizar)")
+                else:
+                    lbl_preview.config(text="Vista previa")
             else:
                 lbl_preview.config(text="Vista previa", image="")
         
         actualizar_preview()
         
-        def seleccionar():
-            self.seleccionar_imagen(ent_url)
-            actualizar_preview()
-        
-        ttk.Button(win, text="Seleccionar imagen...", command=seleccionar).pack(pady=5)
+        btn_seleccionar = ttk.Button(win, text="📁 Seleccionar imagen de mi PC...", command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
+        btn_seleccionar.pack(pady=5)
         
         def guardar():
             club["nombre"] = ent_nombre.get()
@@ -276,7 +288,7 @@ class App:
             guardar_datos()
             win.destroy()
         
-        ttk.Button(win, text="Guardar", command=guardar).pack(pady=20)
+        ttk.Button(win, text="💾 Guardar Cambios", command=guardar).pack(pady=20)
     
     def eliminar_club(self):
         sel = self.tree_clubes.selection()
@@ -598,7 +610,7 @@ class App:
     def crear_formulario_noticia(self, titulo, noticia, callback):
         win = tk.Toplevel(self.root)
         win.title(titulo)
-        win.geometry("500x600")
+        win.geometry("550x750")
         
         ttk.Label(win, text="Título:").pack(pady=3)
         ent_titulo = ttk.Entry(win, width=50)
@@ -611,39 +623,41 @@ class App:
         ent_sub.pack(pady=3)
         
         ttk.Label(win, text="Contenido:").pack(pady=3)
-        txt_contenido = tk.Text(win, width=50, height=5)
+        txt_contenido = tk.Text(win, width=50, height=4)
         txt_contenido.insert("1.0", noticia.get("contenido", "") if noticia else "")
         txt_contenido.pack(pady=3)
         
-        ttk.Label(win, text="URL de Imagen:").pack(pady=3)
+        ttk.Label(win, text="Imagen de la noticia:").pack(pady=3)
         ent_img = ttk.Entry(win, width=50)
         ent_img.insert(0, noticia.get("imagenUrl", "") if noticia else "")
         ent_img.pack(pady=3)
         
-        lbl_preview = tk.Label(win, text="Vista previa:", bg="lightgray", width=40, height=8)
-        lbl_preview.pack(pady=5)
+        lbl_preview = tk.Label(win, text="Vista previa de imagen", bg="#ddd", width=40, height=10)
+        lbl_preview.pack(pady=10)
         
         def actualizar_preview():
             url = ent_img.get()
-            if url and os.path.exists(os.path.join(BASE_DIR, "public", url.lstrip("/"))):
-                try:
-                    img_path = os.path.join(BASE_DIR, "public", url.lstrip("/"))
-                    img = tk.PhotoImage(file=img_path)
-                    img = img.subsample(max(1, max(img.width() // 150, img.height() // 150)))
-                    lbl_preview.image = img
-                    lbl_preview.config(image=img, text="")
-                except:
-                    lbl_preview.config(text="Vista previa", image="")
+            if url:
+                if url.startswith("/images/") and os.path.exists(os.path.join(BASE_DIR, "public", url.lstrip("/"))):
+                    try:
+                        img_path = os.path.join(BASE_DIR, "public", url.lstrip("/"))
+                        img = tk.PhotoImage(file=img_path)
+                        img = img.subsample(max(1, max(img.width() // 150, img.height() // 150)))
+                        lbl_preview.image = img
+                        lbl_preview.config(image=img, text="")
+                    except:
+                        lbl_preview.config(text="Vista previa", image="")
+                elif url.startswith("http"):
+                    lbl_preview.config(text="URL externa\n(no se puede previsualizar)")
+                else:
+                    lbl_preview.config(text="Vista previa")
             else:
                 lbl_preview.config(text="Vista previa", image="")
         
         actualizar_preview()
         
-        def seleccionar():
-            self.seleccionar_imagen(ent_img)
-            actualizar_preview()
-        
-        ttk.Button(win, text="Seleccionar imagen...", command=seleccionar).pack(pady=3)
+        btn_seleccionar = ttk.Button(win, text="📁 Seleccionar imagen de mi PC...", command=lambda: self._seleccionar_y_preview(ent_img, lbl_preview))
+        btn_seleccionar.pack(pady=5)
         
         ttk.Label(win, text="Fecha (YYYY-MM-DD):").pack(pady=3)
         ent_fecha = ttk.Entry(win, width=50)
