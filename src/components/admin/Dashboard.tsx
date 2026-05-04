@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Calendar, Trophy, Newspaper, ArrowUpRight } from 'lucide-react';
+import { Users, Calendar, Trophy, Newspaper, ArrowUpRight, Save, Cloud, CheckCircle } from 'lucide-react';
 import type { Club, Partido, EstadisticaClub, Noticia } from '@/types';
+import { saveToFirebase } from '@/lib/firebase-db';
 
 interface DashboardProps {
   clubes: Club[];
@@ -11,6 +13,30 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ clubes, partidos, estadisticas, noticias, getClubById }: DashboardProps) {
+  const [guardando, setGuardando] = useState(false);
+  const [guardado, setGuardado] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const guardarTodo = async () => {
+    setGuardando(true);
+    setError(null);
+    
+    const results = await Promise.all([
+      saveToFirebase('clubes', clubes),
+      saveToFirebase('partidos', partidos),
+      saveToFirebase('noticias', noticias)
+    ]);
+    
+    setGuardando(false);
+    
+    if (results.every(r => r)) {
+      setGuardado(true);
+      setTimeout(() => setGuardado(false), 3000);
+    } else {
+      setError('Error al guardar. Asegúrate de que Firestore está activado en Firebase Console.');
+    }
+  };
+
   const partidosJugados = partidos.filter(p => p.jugado).length;
   const partidosPendientes = partidos.filter(p => !p.jugado).length;
   const lider = estadisticas[0];
@@ -30,8 +56,43 @@ export default function Dashboard({ clubes, partidos, estadisticas, noticias, ge
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold font-display text-white mb-1">Dashboard</h1>
-        <p className="text-ccm-silver text-sm">Resumen general de la Liga CCM</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold font-display text-white mb-1">Dashboard</h1>
+            <p className="text-ccm-silver text-sm">Resumen general de la Liga CCM</p>
+          </div>
+          <button
+            onClick={guardarTodo}
+            disabled={guardando}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all ${
+              guardado 
+                ? 'bg-green-500 text-white' 
+                : guardando 
+                  ? 'bg-yellow-500 text-white'
+                  : 'bg-ccm-accent text-ccm-black hover:bg-ccm-accent-light'
+            }`}
+          >
+            {guardado ? (
+              <>
+                <CheckCircle className="w-5 h-5" />
+                ¡Guardado!
+              </>
+            ) : guardando ? (
+              <>
+                <Cloud className="w-5 h-5 animate-pulse" />
+                Guardando...
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                Guardar Cambios
+              </>
+            )}
+          </button>
+          {error && (
+            <p className="text-red-400 text-xs mt-2">{error}</p>
+          )}
+        </div>
       </motion.div>
 
       {/* Stats grid */}

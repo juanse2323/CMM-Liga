@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Club, Partido, EstadisticaClub, Noticia, AuthState, Jugador } from '@/types';
+import { saveToFirebase, loadFromFirebase } from '@/lib/firebase-db';
 
 const CLUBES_KEY = 'ccm_clubes';
 const PARTIDOS_KEY = 'ccm_partidos';
@@ -23,14 +24,24 @@ export const convertirImagenABase64 = (file: File): Promise<string> => {
 };
 
 const clubesIniciales: Club[] = [
-  { id: '1', nombre: 'Atlético Nacional', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Atletico_Nacional.png/200px-Atletico_Nacional.png' },
-  { id: '2', nombre: 'Millonarios FC', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Millonarios_FC.png/200px-Millonarios_FC.png' },
-  { id: '3', nombre: 'América de Cali', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Am%C3%A9rica_de_Cali.png/200px-Am%C3%A9rica_de_Cali.png' },
-  { id: '4', nombre: 'Deportivo Cali', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Deportivo_Cali.png/200px-Deportivo_Cali.png' },
-  { id: '5', nombre: 'Independiente Santa Fe', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Santa_Fe.png/200px-Santa_Fe.png' },
-  { id: '6', nombre: 'Deportivo Pasto', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Deportivo_Pasto.png/200px-Deportivo_Pasto.png' },
-  { id: '7', nombre: 'Junior de Barranquilla', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Junior_de_Barranquilla.png/200px-Junior_de_Barranquilla.png' },
-  { id: '8', nombre: 'Once Caldas', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Once_Caldas.png/200px-Once_Caldas.png' },
+  { id: '1', nombre: 'Atlético Nacional', logoUrl: 'https://via.placeholder.com/64?text=AN' },
+  { id: '2', nombre: 'Millonarios FC', logoUrl: 'https://via.placeholder.com/64?text=MIL' },
+  { id: '3', nombre: 'América de Cali', logoUrl: 'https://via.placeholder.com/64?text=AMC' },
+  { id: '4', nombre: 'Deportivo Cali', logoUrl: 'https://via.placeholder.com/64?text=DCI' },
+  { id: '5', nombre: 'Independiente Santa Fe', logoUrl: 'https://via.placeholder.com/64?text=SFE' },
+  { id: '6', nombre: 'Deportivo Pasto', logoUrl: 'https://via.placeholder.com/64?text=DPA' },
+  { id: '7', nombre: 'Deportes Tolima', logoUrl: 'https://via.placeholder.com/64?text=TOL' },
+  { id: '8', nombre: 'Deportivo Pereira', logoUrl: 'https://via.placeholder.com/64?text=PER' },
+  { id: '9', nombre: 'Independiente Medellín', logoUrl: 'https://via.placeholder.com/64?text=MED' },
+  { id: '10', nombre: 'Fortaleza CEIF', logoUrl: 'https://via.placeholder.com/64?text=FOR' },
+  { id: '11', nombre: 'Unión Magdalena', logoUrl: 'https://via.placeholder.com/64?text=UMG' },
+  { id: '12', nombre: 'Llaneros FC', logoUrl: 'https://via.placeholder.com/64?text=LLY' },
+  { id: '13', nombre: 'Atlético Bucaramanga', logoUrl: 'https://via.placeholder.com/64?text=BUC' },
+  { id: '14', nombre: 'Internacional De Bogotá', logoUrl: 'https://via.placeholder.com/64?text=IDB' },
+  { id: '15', nombre: 'Boyacá Chicó', logoUrl: 'https://via.placeholder.com/64?text=BCH' },
+  { id: '16', nombre: 'Jaguares de Córdoba', logoUrl: 'https://via.placeholder.com/64?text=JAG' },
+  { id: '17', nombre: 'Patriotas', logoUrl: 'https://via.placeholder.com/64?text=PAT' },
+  { id: '18', nombre: 'Boca Juniors De Cali', logoUrl: 'https://via.placeholder.com/64?text=BJC' },
 ];
 
 const partidosIniciales: Partido[] = [
@@ -38,10 +49,11 @@ const partidosIniciales: Partido[] = [
   { id: '2', localId: '3', visitanteId: '4', fecha: '2026-05-10', hora: '20:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
   { id: '3', localId: '5', visitanteId: '6', fecha: '2026-05-11', hora: '16:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
   { id: '4', localId: '7', visitanteId: '8', fecha: '2026-05-11', hora: '18:30', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '5', localId: '2', visitanteId: '3', fecha: '2026-05-17', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 2 },
-  { id: '6', localId: '4', visitanteId: '1', fecha: '2026-05-17', hora: '20:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 2 },
-  { id: '7', localId: '6', visitanteId: '7', fecha: '2026-05-18', hora: '16:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 2 },
-  { id: '8', localId: '8', visitanteId: '5', fecha: '2026-05-18', hora: '18:30', golesLocal: null, golesVisitante: null, jugado: false, jornada: 2 },
+  { id: '5', localId: '9', visitanteId: '10', fecha: '2026-05-12', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
+  { id: '6', localId: '11', visitanteId: '12', fecha: '2026-05-12', hora: '20:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
+  { id: '7', localId: '13', visitanteId: '14', fecha: '2026-05-13', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
+  { id: '8', localId: '15', visitanteId: '16', fecha: '2026-05-13', hora: '20:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
+  { id: '9', localId: '17', visitanteId: '18', fecha: '2026-05-14', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
 ];
 
 const noticiasIniciales: Noticia[] = [
@@ -133,12 +145,60 @@ export function useLigaCCM() {
     return cargarDatos(ADMINS_KEY, adminsIniciales);
   });
 
-  useEffect(() => localStorage.setItem(CLUBES_KEY, JSON.stringify(clubes)), [clubes]);
-  useEffect(() => localStorage.setItem(PARTIDOS_KEY, JSON.stringify(partidos)), [partidos]);
-  useEffect(() => localStorage.setItem(NOTICIAS_KEY, JSON.stringify(noticias)), [noticias]);
+  // Cargar datos de Firebase al iniciar
+  useEffect(() => {
+    const loadInitialData = async () => {
+      // Cargar clubes
+      const firebaseClubes = await loadFromFirebase('clubes');
+      if (firebaseClubes && Array.isArray(firebaseClubes) && firebaseClubes.length > 0) {
+        setClubes(firebaseClubes);
+      }
+      
+      // Cargar partidos
+      const firebasePartidos = await loadFromFirebase('partidos');
+      if (firebasePartidos && Array.isArray(firebasePartidos) && firebasePartidos.length > 0) {
+        setPartidos(firebasePartidos);
+      }
+      
+      // Cargar noticias
+      const firebaseNoticias = await loadFromFirebase('noticias');
+      if (firebaseNoticias && Array.isArray(firebaseNoticias) && firebaseNoticias.length > 0) {
+        setNoticias(firebaseNoticias);
+      }
+      
+      // Cargar estadísticas manuales
+      const firebaseEstadisticas = await loadFromFirebase('estadisticas');
+      if (firebaseEstadisticas) {
+        setEstadisticasManuales(firebaseEstadisticas);
+      }
+      
+      console.log('✓ Datos cargados de Firebase');
+    };
+    
+    loadInitialData();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(CLUBES_KEY, JSON.stringify(clubes));
+    saveToFirebase('clubes', clubes);
+  }, [clubes]);
+  useEffect(() => {
+    localStorage.setItem(PARTIDOS_KEY, JSON.stringify(partidos));
+    saveToFirebase('partidos', partidos);
+  }, [partidos]);
+  useEffect(() => {
+    localStorage.setItem(NOTICIAS_KEY, JSON.stringify(noticias));
+    saveToFirebase('noticias', noticias);
+  }, [noticias]);
   useEffect(() => localStorage.setItem(AUTH_KEY, JSON.stringify(auth)), [auth]);
-  useEffect(() => localStorage.setItem(ESTADISTICAS_KEY, JSON.stringify(estadisticasManuales)), [estadisticasManuales]);
-  useEffect(() => localStorage.setItem(ADMINS_KEY, JSON.stringify(admins)), [admins]);
+  useEffect(() => {
+    localStorage.setItem(ESTADISTICAS_KEY, JSON.stringify(estadisticasManuales));
+    saveToFirebase('estadisticas', estadisticasManuales);
+  }, [estadisticasManuales]);
+  useEffect(() => {
+    localStorage.setItem(ADMINS_KEY, JSON.stringify(admins));
+    saveToFirebase('admins', admins);
+  }, [admins]);
 
   const calcularEstadisticas = useCallback((): EstadisticaClub[] => {
     const statsMap = new Map<string, EstadisticaClub>();
