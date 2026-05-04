@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Club, Partido, EstadisticaClub, Noticia, AuthState } from '@/types';
+import type { Club, Partido, EstadisticaClub, Noticia, AuthState, Jugador } from '@/types';
 
 const CLUBES_KEY = 'ccm_clubes';
 const PARTIDOS_KEY = 'ccm_partidos';

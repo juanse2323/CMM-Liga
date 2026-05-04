@@ -103,6 +103,14 @@ export default function Admin() {
           getAdmins={getAdmins}
         />
       )}
+      {location.pathname === '/admin/jugadores' && (
+        <GestionJugadores
+          clubes={clubes}
+          agregarJugador={agregarJugador}
+          eliminarJugador={eliminarJugador}
+          editarJugador={editarJugador}
+        />
+      )}
     </AdminLayout>
   );
 }

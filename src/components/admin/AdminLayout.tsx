@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield, LayoutDashboard, Users, Calendar, Trophy,
-  Newspaper, LogOut, Menu, X, ChevronRight, Crown
+  Newspaper, LogOut, Menu, X, ChevronRight, Crown, Shirt
 } from 'lucide-react';
 import type { AuthState } from '@/types';
 
@@ -21,6 +21,7 @@ export default function AdminLayout({ auth, logout, children }: AdminLayoutProps
   const menuItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/admin/clubes', label: 'Clubes', icon: Users },
+    { path: '/admin/jugadores', label: 'Jugadores', icon: Shirt },
     { path: '/admin/partidos', label: 'Partidos', icon: Calendar },
     { path: '/admin/resultados', label: 'Resultados', icon: Trophy },
     { path: '/admin/tabla', label: 'Tabla', icon: Trophy },
