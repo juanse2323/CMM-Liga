@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Club, Partido, EstadisticaClub, Noticia, AuthState, Jugador } from '@/types';
-import { saveToFirebase, loadFromFirebase } from '@/lib/firebase-db';
+import datosIniciales from '@/data.json';
 
 const CLUBES_KEY = 'ccm_clubes';
 const PARTIDOS_KEY = 'ccm_partidos';
@@ -23,101 +23,9 @@ export const convertirImagenABase64 = (file: File): Promise<string> => {
   });
 };
 
-const clubesIniciales: Club[] = [
-  { id: '1', nombre: 'Atlético Nacional', logoUrl: 'https://via.placeholder.com/64?text=AN' },
-  { id: '2', nombre: 'Millonarios FC', logoUrl: 'https://via.placeholder.com/64?text=MIL' },
-  { id: '3', nombre: 'América de Cali', logoUrl: 'https://via.placeholder.com/64?text=AMC' },
-  { id: '4', nombre: 'Deportivo Cali', logoUrl: 'https://via.placeholder.com/64?text=DCI' },
-  { id: '5', nombre: 'Independiente Santa Fe', logoUrl: 'https://via.placeholder.com/64?text=SFE' },
-  { id: '6', nombre: 'Deportivo Pasto', logoUrl: 'https://via.placeholder.com/64?text=DPA' },
-  { id: '7', nombre: 'Deportes Tolima', logoUrl: 'https://via.placeholder.com/64?text=TOL' },
-  { id: '8', nombre: 'Deportivo Pereira', logoUrl: 'https://via.placeholder.com/64?text=PER' },
-  { id: '9', nombre: 'Independiente Medellín', logoUrl: 'https://via.placeholder.com/64?text=MED' },
-  { id: '10', nombre: 'Fortaleza CEIF', logoUrl: 'https://via.placeholder.com/64?text=FOR' },
-  { id: '11', nombre: 'Unión Magdalena', logoUrl: 'https://via.placeholder.com/64?text=UMG' },
-  { id: '12', nombre: 'Llaneros FC', logoUrl: 'https://via.placeholder.com/64?text=LLY' },
-  { id: '13', nombre: 'Atlético Bucaramanga', logoUrl: 'https://via.placeholder.com/64?text=BUC' },
-  { id: '14', nombre: 'Internacional De Bogotá', logoUrl: 'https://via.placeholder.com/64?text=IDB' },
-  { id: '15', nombre: 'Boyacá Chicó', logoUrl: 'https://via.placeholder.com/64?text=BCH' },
-  { id: '16', nombre: 'Jaguares de Córdoba', logoUrl: 'https://via.placeholder.com/64?text=JAG' },
-  { id: '17', nombre: 'Patriotas', logoUrl: 'https://via.placeholder.com/64?text=PAT' },
-  { id: '18', nombre: 'Boca Juniors De Cali', logoUrl: 'https://via.placeholder.com/64?text=BJC' },
-];
-
-const partidosIniciales: Partido[] = [
-  { id: '1', localId: '1', visitanteId: '2', fecha: '2026-05-10', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '2', localId: '3', visitanteId: '4', fecha: '2026-05-10', hora: '20:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '3', localId: '5', visitanteId: '6', fecha: '2026-05-11', hora: '16:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '4', localId: '7', visitanteId: '8', fecha: '2026-05-11', hora: '18:30', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '5', localId: '9', visitanteId: '10', fecha: '2026-05-12', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '6', localId: '11', visitanteId: '12', fecha: '2026-05-12', hora: '20:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '7', localId: '13', visitanteId: '14', fecha: '2026-05-13', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '8', localId: '15', visitanteId: '16', fecha: '2026-05-13', hora: '20:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-  { id: '9', localId: '17', visitanteId: '18', fecha: '2026-05-14', hora: '18:00', golesLocal: null, golesVisitante: null, jugado: false, jornada: 1 },
-];
-
-const noticiasIniciales: Noticia[] = [
-  {
-    id: '1',
-    titulo: 'Liga CCM anuncia el inicio de la temporada 2026',
-    subtitulo: 'La competencia más emocionante del fútbol Roblox comienza este mes con 8 equipos disputando el título.',
-    contenido: 'La Liga CCM se complace en anunciar el inicio oficial de la temporada 2026. Con 8 equipos de élite compitiendo por la gloria, esta promete ser la temporada más emocionante hasta la fecha.',
-    imagenUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&h=400&fit=crop',
-    fecha: '2026-05-01',
-    categoria: 'Torneo',
-    destacada: true,
-  },
-  {
-    id: '2',
-    titulo: 'Nacional refuerza su plantilla para la temporada',
-    subtitulo: 'El equipo verdolaga presentó tres nuevos fichajes de cara a la competencia.',
-    contenido: 'Atlético Nacional presentó oficialmente a sus nuevos refuerzos para la temporada 2026 de la Liga CCM. Los jugadores llegan con grandes expectativas.',
-    imagenUrl: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=600&h=400&fit=crop',
-    fecha: '2026-04-28',
-    categoria: 'Transferencia',
-    destacada: true,
-  },
-  {
-    id: '3',
-    titulo: 'Millonarios busca recuperar la corona',
-    subtitulo: 'El equipo embajador trabaja intensamente en la pretemporada.',
-    contenido: 'Millonarios FC tiene claro su objetivo: recuperar el título de la Liga CCM. El cuerpo técnico ha diseñado una pretemporada exigente.',
-    imagenUrl: 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=600&h=400&fit=crop',
-    fecha: '2026-04-25',
-    categoria: 'Declaración',
-    destacada: false,
-  },
-  {
-    id: '4',
-    titulo: 'América de Cali presenta su nuevo uniforme',
-    subtitulo: 'El escarlata estrenará indumentaria para la temporada 2026.',
-    contenido: 'América de Cali lanzó su nuevo uniforme para la temporada 2026 de la Liga CCM, manteniendo los colores tradicionales con un diseño moderno.',
-    imagenUrl: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&h=400&fit=crop',
-    fecha: '2026-04-22',
-    categoria: 'General',
-    destacada: false,
-  },
-  {
-    id: '5',
-    titulo: 'Fixture de la primera jornada confirmado',
-    subtitulo: 'Se definieron las fechas y horarios de los primeros partidos.',
-    contenido: 'La Liga CCM confirmó el fixture completo de la primera jornada. Los enfrentamientos prometen emociones desde el primer minuto.',
-    imagenUrl: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=600&h=400&fit=crop',
-    fecha: '2026-04-20',
-    categoria: 'Partido',
-    destacada: false,
-  },
-  {
-    id: '6',
-    titulo: 'Deportivo Pasto apuesta por juveniles',
-    subtitulo: 'El equipo volcánico promoverá talentos de su cantera.',
-    contenido: 'Deportivo Pasto anunció que dará oportunidades a jóvenes talentos de su cantera durante la temporada 2026 de la Liga CCM.',
-    imagenUrl: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600&h=400&fit=crop',
-    fecha: '2026-04-18',
-    categoria: 'Declaración',
-    destacada: false,
-  },
-];
+const clubesIniciales: Club[] = datosIniciales.clubes as Club[];
+const partidosIniciales: Partido[] = datosIniciales.partidos as Partido[];
+const noticiasIniciales: Noticia[] = datosIniciales.noticias as Noticia[];
 
 function cargarDatos<T>(key: string, iniciales: T): T {
   try {
