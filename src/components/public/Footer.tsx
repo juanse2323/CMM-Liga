@@ -8,7 +8,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <img src="/logo-liga-ccm.png" alt="Liga CCM" className="h-10 w-auto" />
+              <img src="/CMM-Liga/logo-liga-ccm.png" alt="Liga CCM" className="h-10 w-auto" />
               <div>
                 <span className="text-lg font-bold font-display text-white">
                   LIGA <span className="text-gradient">CCM</span>
