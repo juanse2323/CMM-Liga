@@ -242,7 +242,7 @@ class App:
         
         win = tk.Toplevel(self.root)
         win.title("Editar Club")
-        win.geometry("450x400")
+        win.geometry("450x500")
         
         ttk.Label(win, text="Nombre:").pack(pady=5)
         ent_nombre = ttk.Entry(win, width=40)
