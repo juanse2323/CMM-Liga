@@ -10,6 +10,10 @@ const firebaseConfig = {
   appId: "1:956411275900:web:97a3c6b1aeb0545da1f7f9"
 };
 
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN || '';
+const REPO_OWNER = "juanse2323";
+const REPO_NAME = "CMM-Liga";
+
 let app;
 let db: Firestore | null = null;
 
@@ -27,14 +31,40 @@ export const saveToFirebase = async (collectionName: string, data: any): Promise
     return false;
   }
   try {
-    // Envolver arrays en un objeto
     const dataToSave = Array.isArray(data) ? { items: data } : data;
     await setDoc(doc(db, collectionName, 'data'), dataToSave, { merge: true });
     console.log(`✓ Guardado en ${collectionName}:`, Array.isArray(data) ? data.length + ' items' : 'ok');
+    
+    await commitToGitHub(collectionName, data);
     return true;
   } catch (error: any) {
     console.error(`✗ Error en ${collectionName}:`, error?.message || error);
     return false;
+  }
+};
+
+const commitToGitHub = async (collectionName: string, data: any) => {
+  const content = JSON.stringify(data, null, 2);
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  
+  try {
+    const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/src/data/${collectionName}.json`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Update ${collectionName} from web`,
+        content: encoded
+      })
+    });
+    if (response.ok) {
+      console.log(`✓ Commit github/${collectionName}.json`);
+    }
+  } catch (e) {
+    console.error('✗ GitHub commit error');
   }
 };
 
