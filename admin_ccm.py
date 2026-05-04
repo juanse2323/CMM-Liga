@@ -4,9 +4,11 @@ import json
 import os
 import subprocess
 from datetime import datetime
+import shutil
 
-DATA_FILE = "src/data.json"
-IMAGES_DIR = "images"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(BASE_DIR, "src", "data.json")
+IMAGES_DIR = os.path.join(BASE_DIR, "public", "images")
 
 if not os.path.exists(IMAGES_DIR):
     os.makedirs(IMAGES_DIR)
@@ -83,6 +85,9 @@ class App:
         self.root.title("CCM Admin - Panel de Gestión")
         self.root.geometry("1100x650")
         
+        if not os.path.exists(IMAGES_DIR):
+            os.makedirs(IMAGES_DIR)
+        
         cargar_datos()
         
         self.notebook = ttk.Notebook(root)
@@ -102,7 +107,7 @@ class App:
     def git_push(self):
         guardar_datos()
         try:
-            subprocess.run(["git", "add", "src/data.json"], check=True, capture_output=True)
+            subprocess.run(["git", "add", "src/data.json", "public/images"], check=True, capture_output=True)
             subprocess.run(["git", "commit", "-m", "Actualización de datos desde admin Python"], check=True, capture_output=True)
             subprocess.run(["git", "push", "origin", "main"], check=True, capture_output=True)
             self.status_label.config(text="✓ Push completado")
@@ -191,7 +196,6 @@ class App:
         if ruta:
             nombre = os.path.basename(ruta)
             destino = os.path.join(IMAGES_DIR, nombre)
-            import shutil
             shutil.copy(ruta, destino)
             entry.delete(0, "end")
             entry.insert(0, f"/images/{nombre}")
@@ -611,16 +615,6 @@ class App:
             win.destroy()
         
         ttk.Button(win, text="Guardar", command=guardar).pack(pady=20)
-    
-    def seleccionar_imagen(self, entry):
-        ruta = filedialog.askopenfilename(filetypes=[("Imágenes", "*.png;*.jpg;*.jpeg;*.gif;*.webp")])
-        if ruta:
-            nombre = os.path.basename(ruta)
-            destino = os.path.join(IMAGES_DIR, nombre)
-            import shutil
-            shutil.copy(ruta, destino)
-            entry.delete(0, "end")
-            entry.insert(0, f"/images/{nombre}")
     
     def configurar_tab_estadisticas(self):
         frame = ttk.LabelFrame(self.tab_estadisticas, text="Estadísticas (calculadas automáticamente)")
