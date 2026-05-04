@@ -256,6 +256,43 @@ export function useLigaCCM() {
     setPartidos(prev => prev.filter(p => p.localId !== id && p.visitanteId !== id));
   }, []);
 
+  // Jugadores CRUD
+  const agregarJugador = useCallback((clubId: string, nombre: string, posicion: string, numero: string) => {
+    const nuevoJugador: Jugador = {
+      id: Date.now().toString(),
+      nombre,
+      posicion,
+      numero,
+    };
+    setClubes(prev => prev.map(c => {
+      if (c.id === clubId) {
+        return { ...c, jugadores: [...(c.jugadores || []), nuevoJugador] };
+      }
+      return c;
+    }));
+  }, []);
+
+  const eliminarJugador = useCallback((clubId: string, jugadorId: string) => {
+    setClubes(prev => prev.map(c => {
+      if (c.id === clubId) {
+        return { ...c, jugadores: (c.jugadores || []).filter(j => j.id !== jugadorId) };
+      }
+      return c;
+    }));
+  }, []);
+
+  const editarJugador = useCallback((clubId: string, jugadorId: string, nombre: string, posicion: string, numero: string) => {
+    setClubes(prev => prev.map(c => {
+      if (c.id === clubId) {
+        return {
+          ...c,
+          jugadores: (c.jugadores || []).map(j => j.id === jugadorId ? { ...j, nombre, posicion, numero } : j),
+        };
+      }
+      return c;
+    }));
+  }, []);
+
   // Partidos CRUD
   const programarPartido = useCallback((localId: string, visitanteId: string, fecha: string, hora: string, jornada: number) => {
     const nuevo: Partido = {
@@ -315,6 +352,8 @@ export function useLigaCCM() {
     login, logout,
     // Clubes
     agregarClub, editarClub, eliminarClub,
+    // Jugadores
+    agregarJugador, eliminarJugador, editarJugador,
     // Partidos
     programarPartido, registrarResultado, eliminarPartido, resetPartido,
     // Noticias

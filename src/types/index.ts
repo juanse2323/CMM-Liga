@@ -11,6 +11,7 @@ export interface Club {
   logoUrl: string;
   fundado?: string;
   estadio?: string;
+  jugadores?: Jugador[];
 }
 
 export interface Partido {

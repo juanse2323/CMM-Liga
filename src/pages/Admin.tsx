@@ -8,6 +8,7 @@ import RegistroResultados from '@/components/admin/RegistroResultados';
 import GestionNoticias from '@/components/admin/GestionNoticias';
 import GestionEstadisticas from '@/components/admin/GestionEstadisticas';
 import GestionAdmins from '@/components/admin/GestionAdmins';
+import GestionJugadores from '@/components/admin/GestionJugadores';
 import { useLigaCCM } from '@/hooks/useLigaCCM';
 
 export default function Admin() {
@@ -23,6 +24,7 @@ export default function Admin() {
     getClubById,
     editarEstadisticas,
     agregarAdmin, eliminarAdmin, getAdmins,
+    agregarJugador, eliminarJugador, editarJugador,
   } = useLigaCCM();
 
   // Si no está autenticado y no está en la página de login, redirigir

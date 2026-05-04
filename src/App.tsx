@@ -41,6 +41,10 @@ export default function App() {
         path="/admin/admins" 
         element={auth.isAuthenticated ? <Admin /> : <Navigate to="/admin" />} 
       />
+      <Route 
+        path="/admin/jugadores" 
+        element={auth.isAuthenticated ? <Admin /> : <Navigate to="/admin" />} 
+      />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )
