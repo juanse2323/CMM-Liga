@@ -180,30 +180,11 @@ class App:
         ent_url = ttk.Entry(win, width=40)
         ent_url.pack(pady=5)
         
-        btn_seleccionar = ttk.Button(win, text="📁 Seleccionar imagen de mi PC...", command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
-        btn_seleccionar.pack(pady=5)
-        
         lbl_preview = tk.Label(win, text="Vista previa del logo", bg="#ddd", width=30, height=8)
         lbl_preview.pack(pady=10)
         
-        def actualizar_preview():
-            url = ent_url.get()
-            if url:
-                if url.startswith("/images/") and os.path.exists(os.path.join(BASE_DIR, "public", url.lstrip("/"))):
-                    try:
-                        img_path = os.path.join(BASE_DIR, "public", url.lstrip("/"))
-                        img = tk.PhotoImage(file=img_path)
-                        img = img.subsample(max(1, max(img.width() // 64, img.height() // 64)))
-                        lbl_preview.image = img
-                        lbl_preview.config(image=img, text="")
-                    except Exception as e:
-                        lbl_preview.config(text="Vista previa", image="")
-                elif url.startswith("http"):
-                    lbl_preview.config(text="URL externa\n(no se puede previsualizar)")
-                else:
-                    lbl_preview.config(text="Vista previa")
-            else:
-                lbl_preview.config(text="Vista previa", image="")
+        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
+        btn_seleccionar.pack(pady=10, fill="x", padx=20)
         
         def guardar():
             nuevo = {"id": str(len(clubes) + 1), "nombre": ent_nombre.get(), "logoUrl": ent_url.get() or "https://via.placeholder.com/64?text=CCM", "jugadores": []}
@@ -254,6 +235,9 @@ class App:
         ent_url.insert(0, club.get("logoUrl", ""))
         ent_url.pack(pady=5)
         
+        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
+        btn_seleccionar.pack(pady=10, fill="x", padx=20)
+        
         lbl_preview = tk.Label(win, text="Vista previa del logo", bg="#ddd", width=30, height=8)
         lbl_preview.pack(pady=10)
         
@@ -277,9 +261,6 @@ class App:
                 lbl_preview.config(text="Vista previa", image="")
         
         actualizar_preview()
-        
-        btn_seleccionar = ttk.Button(win, text="📁 Seleccionar imagen de mi PC...", command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
-        btn_seleccionar.pack(pady=5)
         
         def guardar():
             club["nombre"] = ent_nombre.get()
