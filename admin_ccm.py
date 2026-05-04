@@ -235,11 +235,11 @@ class App:
         ent_url.insert(0, club.get("logoUrl", ""))
         ent_url.pack(pady=5)
         
-        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
-        btn_seleccionar.pack(pady=10, fill="x", padx=20)
-        
         lbl_preview = tk.Label(win, text="Vista previa del logo", bg="#ddd", width=30, height=8)
         lbl_preview.pack(pady=10)
+        
+        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
+        btn_seleccionar.pack(pady=10, fill="x", padx=20)
         
         def actualizar_preview():
             url = ent_url.get()
