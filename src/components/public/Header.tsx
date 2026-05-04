@@ -20,7 +20,7 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
             <img
-              src="/CMM-Liga/logo-liga-ccm.png"
+              src="/logo-liga-ccm.png"
               alt="Liga CCM"
               className="h-8 sm:h-10 w-auto transition-transform duration-300 group-hover:scale-110"
             />

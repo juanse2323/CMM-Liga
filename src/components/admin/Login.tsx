@@ -49,7 +49,7 @@ export default function Login({ login }: LoginProps) {
           {/* Logo */}
           <div className="text-center mb-8">
             <img
-              src="/CMM-Liga/logo-liga-ccm.png"
+              src="/logo-liga-ccm.png"
               alt="Liga CCM"
               className="h-20 w-auto mx-auto mb-4"
             />

@@ -59,7 +59,7 @@ export default function AdminLayout({ auth, logout, children }: AdminLayoutProps
           {/* Logo */}
           <div className="flex items-center justify-between p-6 border-b border-white/[0.05]">
             <Link to="/admin/dashboard" className="flex items-center gap-3">
-              <img src="/CMM-Liga/logo-liga-ccm.png" alt="Liga CCM" className="h-8 w-auto" />
+              <img src="/logo-liga-ccm.png" alt="Liga CCM" className="h-8 w-auto" />
               <div>
                 <span className="text-sm font-bold font-display text-white">
                   LIGA <span className="text-gradient">CCM</span>
