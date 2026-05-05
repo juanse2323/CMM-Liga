@@ -3,7 +3,7 @@
     {
       "id": "1",
       "nombre": "Atlético Nacional",
-      "logoUrl": "https://via.placeholder.com/64?text=AN",
+      "logoUrl": "/images/logo-atletico-nacional-4096.webp",
       "jugadores": []
     },
     {
@@ -43,12 +43,6 @@
       "jugadores": []
     },
     {
-      "id": "8",
-      "nombre": "Deportivo Pereira",
-      "logoUrl": "https://via.placeholder.com/64?text=PER",
-      "jugadores": []
-    },
-    {
       "id": "9",
       "nombre": "Independiente Medellín",
       "logoUrl": "https://via.placeholder.com/64?text=MED",
@@ -79,12 +73,6 @@
       "jugadores": []
     },
     {
-      "id": "14",
-      "nombre": "Internacional De Bogotá",
-      "logoUrl": "https://via.placeholder.com/64?text=IDB",
-      "jugadores": []
-    },
-    {
       "id": "15",
       "nombre": "Boyacá Chicó",
       "logoUrl": "https://via.placeholder.com/64?text=BCH",
@@ -106,12 +94,6 @@
       "id": "18",
       "nombre": "Boca Juniors De Cali",
       "logoUrl": "https://via.placeholder.com/64?text=BJC",
-      "jugadores": []
-    },
-    {
-      "id": "19",
-      "nombre": "DA",
-      "logoUrl": "/images/logo-atletico-nacional-4096.webp",
       "jugadores": []
     }
   ],
@@ -150,17 +132,6 @@
       "jornada": 1
     },
     {
-      "id": "4",
-      "localId": "7",
-      "visitanteId": "8",
-      "fecha": "2026-05-11",
-      "hora": "18:30",
-      "golesLocal": null,
-      "golesVisitante": null,
-      "jugado": false,
-      "jornada": 1
-    },
-    {
       "id": "5",
       "localId": "9",
       "visitanteId": "10",
@@ -177,17 +148,6 @@
       "visitanteId": "12",
       "fecha": "2026-05-12",
       "hora": "20:00",
-      "golesLocal": null,
-      "golesVisitante": null,
-      "jugado": false,
-      "jornada": 1
-    },
-    {
-      "id": "7",
-      "localId": "13",
-      "visitanteId": "14",
-      "fecha": "2026-05-13",
-      "hora": "18:00",
       "golesLocal": null,
       "golesVisitante": null,
       "jugado": false,
