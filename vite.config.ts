@@ -4,7 +4,7 @@ import { defineConfig } from "vite"
 import { inspectAttr } from 'kimi-plugin-inspect-react'
 
 export default defineConfig({
-  base: '/CMM-Liga/',
+  base: '/', // Cambio crucial: permite deploy en Vercel sin subfolder
   plugins: [inspectAttr(), react()],
   server: {
     port: 3000,
