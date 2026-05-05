@@ -1,0 +1,241 @@
+{
+  "clubes": [
+    {
+      "id": "1",
+      "nombre": "Atlético Nacional",
+      "logoUrl": "/images/logo-atletico-nacional-4096.webp",
+      "jugadores": []
+    },
+    {
+      "id": "2",
+      "nombre": "Millonarios FC",
+      "logoUrl": "https://via.placeholder.com/64?text=MIL",
+      "jugadores": []
+    },
+    {
+      "id": "3",
+      "nombre": "América de Cali",
+      "logoUrl": "https://via.placeholder.com/64?text=AMC",
+      "jugadores": []
+    },
+    {
+      "id": "4",
+      "nombre": "Deportivo Cali",
+      "logoUrl": "https://via.placeholder.com/64?text=DCI",
+      "jugadores": []
+    },
+    {
+      "id": "5",
+      "nombre": "Independiente Santa Fe",
+      "logoUrl": "https://via.placeholder.com/64?text=SFE",
+      "jugadores": []
+    },
+    {
+      "id": "6",
+      "nombre": "Deportivo Pasto",
+      "logoUrl": "https://via.placeholder.com/64?text=DPA",
+      "jugadores": []
+    },
+    {
+      "id": "7",
+      "nombre": "Deportes Tolima",
+      "logoUrl": "https://via.placeholder.com/64?text=TOL",
+      "jugadores": []
+    },
+    {
+      "id": "8",
+      "nombre": "Deportivo Pereira",
+      "logoUrl": "https://via.placeholder.com/64?text=PER",
+      "jugadores": []
+    },
+    {
+      "id": "9",
+      "nombre": "Independiente Medellín",
+      "logoUrl": "https://via.placeholder.com/64?text=MED",
+      "jugadores": []
+    },
+    {
+      "id": "10",
+      "nombre": "Fortaleza CEIF",
+      "logoUrl": "https://via.placeholder.com/64?text=FOR",
+      "jugadores": []
+    },
+    {
+      "id": "11",
+      "nombre": "Unión Magdalena",
+      "logoUrl": "https://via.placeholder.com/64?text=UMG",
+      "jugadores": []
+    },
+    {
+      "id": "12",
+      "nombre": "Llaneros FC",
+      "logoUrl": "https://via.placeholder.com/64?text=LLY",
+      "jugadores": []
+    },
+    {
+      "id": "13",
+      "nombre": "Atlético Bucaramanga",
+      "logoUrl": "https://via.placeholder.com/64?text=BUC",
+      "jugadores": []
+    },
+    {
+      "id": "14",
+      "nombre": "Internacional De Bogotá",
+      "logoUrl": "https://via.placeholder.com/64?text=IDB",
+      "jugadores": []
+    },
+    {
+      "id": "15",
+      "nombre": "Boyacá Chicó",
+      "logoUrl": "https://via.placeholder.com/64?text=BCH",
+      "jugadores": []
+    },
+    {
+      "id": "16",
+      "nombre": "Jaguares de Córdoba",
+      "logoUrl": "https://via.placeholder.com/64?text=JAG",
+      "jugadores": []
+    },
+    {
+      "id": "17",
+      "nombre": "Patriotas",
+      "logoUrl": "https://via.placeholder.com/64?text=PAT",
+      "jugadores": []
+    },
+    {
+      "id": "18",
+      "nombre": "Boca Juniors De Cali",
+      "logoUrl": "https://via.placeholder.com/64?text=BJC",
+      "jugadores": []
+    },
+    {
+      "id": "19",
+      "nombre": "DA",
+      "logoUrl": "/images/logo-atletico-nacional-4096.webp",
+      "jugadores": []
+    }
+  ],
+  "partidos": [
+    {
+      "id": "1",
+      "localId": "1",
+      "visitanteId": "2",
+      "fecha": "2026-05-10",
+      "hora": "18:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "2",
+      "localId": "3",
+      "visitanteId": "4",
+      "fecha": "2026-05-10",
+      "hora": "20:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "3",
+      "localId": "5",
+      "visitanteId": "6",
+      "fecha": "2026-05-11",
+      "hora": "16:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "4",
+      "localId": "7",
+      "visitanteId": "8",
+      "fecha": "2026-05-11",
+      "hora": "18:30",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "5",
+      "localId": "9",
+      "visitanteId": "10",
+      "fecha": "2026-05-12",
+      "hora": "18:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "6",
+      "localId": "11",
+      "visitanteId": "12",
+      "fecha": "2026-05-12",
+      "hora": "20:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "7",
+      "localId": "13",
+      "visitanteId": "14",
+      "fecha": "2026-05-13",
+      "hora": "18:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "8",
+      "localId": "15",
+      "visitanteId": "16",
+      "fecha": "2026-05-13",
+      "hora": "20:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    },
+    {
+      "id": "9",
+      "localId": "17",
+      "visitanteId": "18",
+      "fecha": "2026-05-14",
+      "hora": "18:00",
+      "golesLocal": null,
+      "golesVisitante": null,
+      "jugado": false,
+      "jornada": 1
+    }
+  ],
+  "noticias": [
+    {
+      "id": "1",
+      "titulo": "Liga CCM anuncia el inicio de la temporada 2026",
+      "subtitulo": "La competencia más emocionante del fútbol Roblox comienza este mes",
+      "contenido": "La Liga CCM se complace en anunciar el inicio oficial de la temporada 2026.",
+      "imagenUrl": "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&h=400&fit=crop",
+      "fecha": "2026-05-01",
+      "categoria": "Torneo",
+      "destacada": true
+    },
+    {
+      "id": "2",
+      "titulo": "Nacional refuerza su plantilla para la temporada",
+      "subtitulo": "El equipo verdolaga presentó tres nuevos fichajes",
+      "contenido": "Atlético Nacional presentó oficialmente a sus nuevos refuerzos.",
+      "imagenUrl": "https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=600&h=400&fit=crop",
+      "fecha": "2026-04-28",
+      "categoria": "Transferencia",
+      "destacada": true
+    }
+  ]
+}
