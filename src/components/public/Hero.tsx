@@ -23,7 +23,7 @@ export default function Hero({ totalClubes, totalPartidos }: { totalClubes: numb
           className="mb-8"
         >
           <img
-            src="/logo-liga-ccm.png"
+            src="/CMM-Liga/logo-liga-ccm.png"
             alt="Liga CCM"
             className="h-32 w-auto mx-auto mb-6 drop-shadow-2xl"
           />
