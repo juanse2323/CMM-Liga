@@ -1,7 +1,3 @@
-node_modules
-dist
-.vercel
-*.log
-.DS_Store
-create-repo.ps1
+.env
 .env.local
+.env.*.local
