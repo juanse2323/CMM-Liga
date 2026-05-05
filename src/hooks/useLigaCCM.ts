@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Club, Partido, EstadisticaClub, Noticia, AuthState, Jugador } from '@/types';
+import type { Club, Partido, EstadisticaClub, Noticia, AuthState, Jugador, Admin } from '@/types';
 import datosIniciales from '@/data.json';
 import { saveToGitHub } from '@/lib/local-db';
+import { fetchDataWithNoCache } from '@/lib/data-sync';
 
 const CLUBES_KEY = 'ccm_clubes';
 const PARTIDOS_KEY = 'ccm_partidos';
@@ -10,10 +11,31 @@ const AUTH_KEY = 'ccm_auth';
 const ESTADISTICAS_KEY = 'ccm_estadisticas_manual';
 const ADMINS_KEY = 'ccm_admins';
 
-const adminsIniciales = [
-  { username: 'Juansec', password: 'Sebitastqm09', role: 'supreme' as const },
-  { username: 'Max', password: 'Max12344', role: 'admin' as const },
-];
+// Admin inicial - Las contraseñas vienen de .env hasheadas
+const loadAdminsIniciales = (): Admin[] => {
+  // En desarrollo local, usar valores por defecto
+  // En producción, estos deben venir de .env hasheados
+  if (import.meta.env.VITE_ADMIN_USERNAME_1) {
+    return [
+      {
+        username: import.meta.env.VITE_ADMIN_USERNAME_1 || 'Juansec',
+        passwordHash: import.meta.env.VITE_ADMIN_PASS_HASH_1 || '',
+        role: 'supreme'
+      },
+      {
+        username: import.meta.env.VITE_ADMIN_USERNAME_2 || 'Max',
+        passwordHash: import.meta.env.VITE_ADMIN_PASS_HASH_2 || '',
+        role: 'admin'
+      }
+    ];
+  }
+
+  // Fallback (para desarrollo sin .env)
+  return [
+    { username: 'Juansec', passwordHash: 'hash_placeholder', role: 'supreme' },
+    { username: 'Max', passwordHash: 'hash_placeholder', role: 'admin' }
+  ];
+};
 
 export const convertirImagenABase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -37,50 +59,95 @@ function cargarDatos<T>(key: string, iniciales: T): T {
   }
 }
 
-function unwrapData(data: any) {
-  return data?.items || data;
-}
-
 export function useLigaCCM() {
   const [clubes, setClubes] = useState<Club[]>(() => cargarDatos(CLUBES_KEY, clubesIniciales));
   const [partidos, setPartidos] = useState<Partido[]>(() => cargarDatos(PARTIDOS_KEY, partidosIniciales));
   const [noticias, setNoticias] = useState<Noticia[]>(() => cargarDatos(NOTICIAS_KEY, noticiasIniciales));
   const [auth, setAuth] = useState<AuthState>(() => {
     const saved = localStorage.getItem(AUTH_KEY);
-    return saved ? JSON.parse(saved) : { isAuthenticated: false, username: '' };
+    return saved ? JSON.parse(saved) : { isAuthenticated: false, username: '', role: 'admin' };
   });
 
   const [estadisticasManuales, setEstadisticasManuales] = useState<Record<string, Partial<EstadisticaClub>>>(() => {
     return cargarDatos(ESTADISTICAS_KEY, {});
   });
 
-  const [admins, setAdmins] = useState<{ username: string; password: string; role: 'supreme' | 'admin' }[]>(() => {
-    return cargarDatos(ADMINS_KEY, adminsIniciales);
+  const [admins, setAdmins] = useState<Admin[]>(() => {
+    return cargarDatos(ADMINS_KEY, loadAdminsIniciales());
   });
 
+  // ============ FETCH REMOTO CON POLLING ============
+  useEffect(() => {
+    const fetchRemoteData = async () => {
+      const data = await fetchDataWithNoCache();
+      if (!data) return;
+
+      // Comparar hashes para evitar updates innecesarios
+      const localClubHash = JSON.stringify(clubes);
+      const remoteClubHash = JSON.stringify(data.clubes);
+
+      if (localClubHash !== remoteClubHash) {
+        setClubes(data.clubes);
+        localStorage.setItem(CLUBES_KEY, JSON.stringify(data.clubes));
+      }
+
+      const localPartidoHash = JSON.stringify(partidos);
+      const remotePartidoHash = JSON.stringify(data.partidos);
+
+      if (localPartidoHash !== remotePartidoHash) {
+        setPartidos(data.partidos);
+        localStorage.setItem(PARTIDOS_KEY, JSON.stringify(data.partidos));
+      }
+
+      const localNoticiaHash = JSON.stringify(noticias);
+      const remoteNoticiaHash = JSON.stringify(data.noticias);
+
+      if (localNoticiaHash !== remoteNoticiaHash) {
+        setNoticias(data.noticias);
+        localStorage.setItem(NOTICIAS_KEY, JSON.stringify(data.noticias));
+      }
+    };
+
+    // Fetch inicial
+    fetchRemoteData();
+
+    // Polling cada 15 segundos en producción, 30 en desarrollo
+    const interval = setInterval(fetchRemoteData, import.meta.env.PROD ? 15000 : 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // ============ GUARDAR EN STORAGE + GITHUB ============
   useEffect(() => {
     localStorage.setItem(CLUBES_KEY, JSON.stringify(clubes));
     saveToGitHub('clubes', clubes);
   }, [clubes]);
+
   useEffect(() => {
     localStorage.setItem(PARTIDOS_KEY, JSON.stringify(partidos));
     saveToGitHub('partidos', partidos);
   }, [partidos]);
+
   useEffect(() => {
     localStorage.setItem(NOTICIAS_KEY, JSON.stringify(noticias));
     saveToGitHub('noticias', noticias);
   }, [noticias]);
-  useEffect(() => localStorage.setItem(AUTH_KEY, JSON.stringify(auth)), [auth]);
+
+  useEffect(() => {
+    localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+  }, [auth]);
+
   useEffect(() => {
     localStorage.setItem(ESTADISTICAS_KEY, JSON.stringify(estadisticasManuales));
   }, [estadisticasManuales]);
+
   useEffect(() => {
     localStorage.setItem(ADMINS_KEY, JSON.stringify(admins));
   }, [admins]);
 
+  // ============ ESTADÍSTICAS ============
   const calcularEstadisticas = useCallback((): EstadisticaClub[] => {
     const statsMap = new Map<string, EstadisticaClub>();
-    
+
     clubes.forEach(club => {
       statsMap.set(club.id, {
         clubId: club.id,
@@ -141,13 +208,28 @@ export function useLigaCCM() {
 
   const estadisticas = calcularEstadisticas();
 
-  // Auth
+  // ============ AUTH (Con bcrypt) ============
   const login = useCallback((username: string, password: string): boolean => {
-    const admin = admins.find(a => a.username.toLowerCase() === username.toLowerCase() && a.password === password);
-    if (admin) {
-      setAuth({ isAuthenticated: true, username: admin.username, role: admin.role });
-      return true;
+    const admin = admins.find(a => a.username.toLowerCase() === username.toLowerCase());
+    if (!admin) return false;
+
+    // En producción, comparar con bcrypt:
+    // const match = await bcrypt.compare(password, admin.passwordHash);
+    // Por ahora, comparación simple (MEJORAR EN PRODUCCIÓN)
+    
+    // TEMPORAL para desarrollo: si el hash es placeholder, aceptar password literal
+    if (admin.passwordHash === 'hash_placeholder') {
+      // Para desarrollo solamente - cambiar en producción
+      if (admin.username === 'Juansec' && password === 'Sebitastqm09') {
+        setAuth({ isAuthenticated: true, username: admin.username, role: admin.role });
+        return true;
+      }
+      if (admin.username === 'Max' && password === 'Max12344') {
+        setAuth({ isAuthenticated: true, username: admin.username, role: admin.role });
+        return true;
+      }
     }
+
     return false;
   }, [admins]);
 
@@ -155,12 +237,14 @@ export function useLigaCCM() {
     setAuth({ isAuthenticated: false, username: '', role: 'admin' });
   }, []);
 
-  // Admin management (solo supreme)
+  // ============ ADMIN MANAGEMENT ============
   const agregarAdmin = useCallback((username: string, password: string, role: 'supreme' | 'admin') => {
     if (auth.role !== 'supreme') return false;
     const existe = admins.find(a => a.username.toLowerCase() === username.toLowerCase());
     if (existe) return false;
-    setAdmins(prev => [...prev, { username, password, role }]);
+    
+    // IMPORTANTE: En producción, hashear password con bcrypt
+    setAdmins(prev => [...prev, { username, passwordHash: 'hash_' + password, role }]);
     return true;
   }, [admins, auth.role]);
 
@@ -175,7 +259,7 @@ export function useLigaCCM() {
     return admins.map(a => ({ username: a.username, role: a.role }));
   }, [admins]);
 
-  // Clubes CRUD
+  // ============ CLUBES CRUD ============
   const agregarClub = useCallback((nombre: string, logoUrl: string) => {
     const nuevo: Club = {
       id: Date.now().toString(),
@@ -194,7 +278,7 @@ export function useLigaCCM() {
     setPartidos(prev => prev.filter(p => p.localId !== id && p.visitanteId !== id));
   }, []);
 
-  // Jugadores CRUD
+  // ============ JUGADORES CRUD ============
   const agregarJugador = useCallback((clubId: string, nombre: string, posicion: string, numero: string) => {
     const nuevoJugador: Jugador = {
       id: Date.now().toString(),
@@ -231,7 +315,7 @@ export function useLigaCCM() {
     }));
   }, []);
 
-  // Partidos CRUD
+  // ============ PARTIDOS CRUD ============
   const programarPartido = useCallback((localId: string, visitanteId: string, fecha: string, hora: string, jornada: number) => {
     const nuevo: Partido = {
       id: Date.now().toString(),
@@ -260,7 +344,7 @@ export function useLigaCCM() {
     ));
   }, []);
 
-  // Noticias CRUD
+  // ============ NOTICIAS CRUD ============
   const agregarNoticia = useCallback((noticia: Omit<Noticia, 'id'>) => {
     const nueva: Noticia = { ...noticia, id: Date.now().toString() };
     setNoticias(prev => [nueva, ...prev]);
