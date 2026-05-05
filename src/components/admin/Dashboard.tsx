@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Calendar, Trophy, Newspaper, ArrowUpRight, Save, Cloud, CheckCircle } from 'lucide-react';
 import type { Club, Partido, EstadisticaClub, Noticia } from '@/types';
-import { saveToFirebase } from '@/lib/firebase-db';
+import { saveToGitHub } from '@/lib/local-db';
 
 interface DashboardProps {
   clubes: Club[];
@@ -21,19 +21,19 @@ export default function Dashboard({ clubes, partidos, estadisticas, noticias, ge
     setGuardando(true);
     setError(null);
     
-    const results = await Promise.all([
-      saveToFirebase('clubes', clubes),
-      saveToFirebase('partidos', partidos),
-      saveToFirebase('noticias', noticias)
-    ]);
-    
-    setGuardando(false);
-    
-    if (results.every(r => r)) {
+    try {
+      await Promise.all([
+        saveToGitHub('clubes', clubes),
+        saveToGitHub('partidos', partidos),
+        saveToGitHub('noticias', noticias)
+      ]);
+      
       setGuardado(true);
       setTimeout(() => setGuardado(false), 3000);
-    } else {
-      setError('Error al guardar. Asegúrate de que Firestore está activado en Firebase Console.');
+    } catch (e) {
+      setError('Error al guardar en GitHub');
+    } finally {
+      setGuardando(false);
     }
   };
 

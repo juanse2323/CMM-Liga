@@ -33,7 +33,7 @@ export const saveToFirebase = async (collectionName: string, data: any): Promise
   try {
     const dataToSave = Array.isArray(data) ? { items: data } : data;
     await setDoc(doc(db, collectionName, 'data'), dataToSave, { merge: true });
-    console.log(`✓ Guardado en ${collectionName}:`, Array.isArray(data) ? data.length + ' items' : 'ok');
+    console.log(`✓ Guardado en Firebase ${collectionName}`);
     
     await commitToGitHub(collectionName, data);
     return true;
@@ -44,10 +44,18 @@ export const saveToFirebase = async (collectionName: string, data: any): Promise
 };
 
 const commitToGitHub = async (collectionName: string, data: any) => {
+  if (!GITHUB_TOKEN) return;
+  
   const content = JSON.stringify(data, null, 2);
   const encoded = btoa(unescape(encodeURIComponent(content)));
   
   try {
+    const existing = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/src/data/${collectionName}.json`, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+    });
+    const existingData = await existing.json();
+    const sha = existingData.sha;
+    
     const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/src/data/${collectionName}.json`, {
       method: 'PUT',
       headers: {
@@ -56,15 +64,16 @@ const commitToGitHub = async (collectionName: string, data: any) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        message: `Update ${collectionName} from web`,
-        content: encoded
+        message: `Update ${collectionName} from admin panel`,
+        content: encoded,
+        sha: sha
       })
     });
     if (response.ok) {
-      console.log(`✓ Commit github/${collectionName}.json`);
+      console.log(`✓ Guardado en GitHub: ${collectionName}.json`);
     }
   } catch (e) {
-    console.error('✗ GitHub commit error');
+    console.error('✗ Error guardando en GitHub');
   }
 };
 
@@ -74,7 +83,6 @@ export const loadFromFirebase = async (collectionName: string): Promise<any | nu
     const docSnap = await getDoc(doc(db, collectionName, 'data'));
     if (docSnap.exists()) {
       const data = docSnap.data();
-      // Desenvolver si tiene 'items'
       return data.items || data;
     }
     return null;

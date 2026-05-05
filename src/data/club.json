@@ -1,0 +1,13 @@
+[
+  {
+    "id": "club-1",
+    "nombre": "Real Madrid CCM",
+    "logoUrl": "",
+    "jugadores": [],
+    "partidosGanados": 0,
+    "partidosPerdidos": 0,
+    "partidosEmpatados": 0,
+    "golesFavor": 0,
+    "golesContra": 0
+  }
+]

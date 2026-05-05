@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Club, Partido, EstadisticaClub, Noticia, AuthState, Jugador } from '@/types';
 import datosIniciales from '@/data.json';
+import { saveToGitHub } from '@/lib/local-db';
 
 const CLUBES_KEY = 'ccm_clubes';
 const PARTIDOS_KEY = 'ccm_partidos';
@@ -36,6 +37,10 @@ function cargarDatos<T>(key: string, iniciales: T): T {
   }
 }
 
+function unwrapData(data: any) {
+  return data?.items || data;
+}
+
 export function useLigaCCM() {
   const [clubes, setClubes] = useState<Club[]>(() => cargarDatos(CLUBES_KEY, clubesIniciales));
   const [partidos, setPartidos] = useState<Partido[]>(() => cargarDatos(PARTIDOS_KEY, partidosIniciales));
@@ -53,59 +58,24 @@ export function useLigaCCM() {
     return cargarDatos(ADMINS_KEY, adminsIniciales);
   });
 
-  // Cargar datos de Firebase al iniciar
-  useEffect(() => {
-    const loadInitialData = async () => {
-      // Cargar clubes
-      const firebaseClubes = await loadFromFirebase('clubes');
-      if (firebaseClubes && Array.isArray(firebaseClubes) && firebaseClubes.length > 0) {
-        setClubes(firebaseClubes);
-      }
-      
-      // Cargar partidos
-      const firebasePartidos = await loadFromFirebase('partidos');
-      if (firebasePartidos && Array.isArray(firebasePartidos) && firebasePartidos.length > 0) {
-        setPartidos(firebasePartidos);
-      }
-      
-      // Cargar noticias
-      const firebaseNoticias = await loadFromFirebase('noticias');
-      if (firebaseNoticias && Array.isArray(firebaseNoticias) && firebaseNoticias.length > 0) {
-        setNoticias(firebaseNoticias);
-      }
-      
-      // Cargar estadísticas manuales
-      const firebaseEstadisticas = await loadFromFirebase('estadisticas');
-      if (firebaseEstadisticas) {
-        setEstadisticasManuales(firebaseEstadisticas);
-      }
-      
-      console.log('✓ Datos cargados de Firebase');
-    };
-    
-    loadInitialData();
-  }, []);
-
   useEffect(() => {
     localStorage.setItem(CLUBES_KEY, JSON.stringify(clubes));
-    saveToFirebase('clubes', clubes);
+    saveToGitHub('clubes', clubes);
   }, [clubes]);
   useEffect(() => {
     localStorage.setItem(PARTIDOS_KEY, JSON.stringify(partidos));
-    saveToFirebase('partidos', partidos);
+    saveToGitHub('partidos', partidos);
   }, [partidos]);
   useEffect(() => {
     localStorage.setItem(NOTICIAS_KEY, JSON.stringify(noticias));
-    saveToFirebase('noticias', noticias);
+    saveToGitHub('noticias', noticias);
   }, [noticias]);
   useEffect(() => localStorage.setItem(AUTH_KEY, JSON.stringify(auth)), [auth]);
   useEffect(() => {
     localStorage.setItem(ESTADISTICAS_KEY, JSON.stringify(estadisticasManuales));
-    saveToFirebase('estadisticas', estadisticasManuales);
   }, [estadisticasManuales]);
   useEffect(() => {
     localStorage.setItem(ADMINS_KEY, JSON.stringify(admins));
-    saveToFirebase('admins', admins);
   }, [admins]);
 
   const calcularEstadisticas = useCallback((): EstadisticaClub[] => {
