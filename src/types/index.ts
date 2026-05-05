@@ -57,7 +57,7 @@ export interface AuthState {
 
 export interface Admin {
   username: string;
-  password: string;
+  passwordHash: string;
   role: 'supreme' | 'admin';
 }
 
