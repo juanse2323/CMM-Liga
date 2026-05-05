@@ -170,21 +170,22 @@ class App:
     def agregar_club(self):
         win = tk.Toplevel(self.root)
         win.title("Agregar Club")
-        win.geometry("450x450")
+        win.geometry("500x650")
         
-        ttk.Label(win, text="Nombre del Club:").pack(pady=5)
-        ent_nombre = ttk.Entry(win, width=40)
-        ent_nombre.pack(pady=5)
+        ttk.Label(win, text="Nombre del Club:", font=("Arial", 12)).pack(pady=(20, 5))
+        ent_nombre = ttk.Entry(win, width=40, font=("Arial", 12))
+        ent_nombre.pack(pady=5, ipady=5)
         
-        ttk.Label(win, text="URL del Logo:").pack(pady=5)
-        ent_url = ttk.Entry(win, width=40)
-        ent_url.pack(pady=5)
+        ttk.Label(win, text="URL del Logo:", font=("Arial", 12)).pack(pady=(20, 5))
+        ent_url = ttk.Entry(win, width=40, font=("Arial", 11))
+        ent_url.pack(pady=5, ipady=3)
         
-        lbl_preview = tk.Label(win, text="Vista previa del logo", bg="#ddd", width=30, height=8)
+        ttk.Label(win, text="Vista previa del logo:", font=("Arial", 11)).pack(pady=(25, 5))
+        lbl_preview = tk.Label(win, text="Sin imagen", bg="#ddd", width=35, height=10)
         lbl_preview.pack(pady=10)
         
-        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
-        btn_seleccionar.pack(pady=10, fill="x", padx=20)
+        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 12, "bold"), height=2, command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
+        btn_seleccionar.pack(pady=15, fill="x", padx=30)
         
         def guardar():
             nuevo = {"id": str(len(clubes) + 1), "nombre": ent_nombre.get(), "logoUrl": ent_url.get() or "https://via.placeholder.com/64?text=CCM", "jugadores": []}
@@ -223,23 +224,24 @@ class App:
         
         win = tk.Toplevel(self.root)
         win.title("Editar Club")
-        win.geometry("450x500")
+        win.geometry("500x650")
         
-        ttk.Label(win, text="Nombre:").pack(pady=5)
-        ent_nombre = ttk.Entry(win, width=40)
+        ttk.Label(win, text="Nombre:", font=("Arial", 12)).pack(pady=(20, 5))
+        ent_nombre = ttk.Entry(win, width=40, font=("Arial", 12))
         ent_nombre.insert(0, cnombre)
-        ent_nombre.pack(pady=5)
+        ent_nombre.pack(pady=5, ipady=5)
         
-        ttk.Label(win, text="URL del Logo:").pack(pady=5)
-        ent_url = ttk.Entry(win, width=40)
+        ttk.Label(win, text="URL del Logo:", font=("Arial", 12)).pack(pady=(20, 5))
+        ent_url = ttk.Entry(win, width=40, font=("Arial", 11))
         ent_url.insert(0, club.get("logoUrl", ""))
-        ent_url.pack(pady=5)
+        ent_url.pack(pady=5, ipady=3)
         
-        lbl_preview = tk.Label(win, text="Vista previa del logo", bg="#ddd", width=30, height=8)
+        ttk.Label(win, text="Vista previa del logo:", font=("Arial", 11)).pack(pady=(25, 5))
+        lbl_preview = tk.Label(win, text="Sin imagen", bg="#ddd", width=35, height=10)
         lbl_preview.pack(pady=10)
         
-        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
-        btn_seleccionar.pack(pady=10, fill="x", padx=20)
+        btn_seleccionar = tk.Button(win, text="📁 SUBIR IMAGEN DESDE MI PC", bg="#4CAF50", fg="white", font=("Arial", 12, "bold"), height=2, command=lambda: self._seleccionar_y_preview(ent_url, lbl_preview))
+        btn_seleccionar.pack(pady=15, fill="x", padx=30)
         
         def actualizar_preview():
             url = ent_url.get()
